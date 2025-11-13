@@ -1,0 +1,33 @@
+name: Start Bot
+
+on:
+  workflow_dispatch:  # Permet aussi le déclenchement manuel
+
+jobs:
+  start_it:
+    name: Start the bot
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start bot
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ~/bot-forge
+            echo "Starting bot..."
+            pm2 start dist/bot.js --name discord-bot
+            echo "Bot started!"
+            pm2 status
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Bot started successfully!"
+          else
+            echo "❌ Ohoh, can't start the bot!"
+          fi
