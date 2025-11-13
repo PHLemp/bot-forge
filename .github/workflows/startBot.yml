@@ -1,11 +1,11 @@
-name: Deploy Bot to Linux Server
+name: Start Bot
 
 on:
   workflow_dispatch:  # Permet aussi le déclenchement manuel
 
 jobs:
-  deploy:
-    name: Deploy to Production
+  start_it:
+    name: Start the bot
     runs-on: ubuntu-latest
 
     steps:
