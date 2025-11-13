@@ -7,10 +7,11 @@ import { DbModel } from './dbModel';
 export class IoManager {
     private constructor() { }
 
-    private static readonly stateDbFilePath = path.join(__dirname, 'json/db.json');
-    private static readonly logFileFolder = path.join(__dirname, '../logs');
-    private static readonly logFilePath = IoManager.logFileFolder + "/log.txt";
-    private static readonly greenlightFilePath = path.join(__dirname, 'json/greenlight-status.json');
+    private static readonly projectRoot = process.cwd();
+    private static readonly srcPath = path.join(IoManager.projectRoot, 'src');
+    private static readonly stateDbFilePath = path.join(IoManager.srcPath, 'database', 'json', 'db.json');
+    private static readonly logFileFolder = path.join(IoManager.srcPath, 'logs');
+    private static readonly logFilePath = path.join(IoManager.logFileFolder, 'log.txt');
 
     private static isWriting = false;
     private static readonly writeQueue: Array<() => Promise<void>> = [];
@@ -65,46 +66,6 @@ export class IoManager {
         });
 
         return dbObj;
-    }
-
-    /**
-     * Sauvegarde le statut du greenlight dans un fichier
-     * @param isGiven Si le greenlight a été donné ou non
-     * @param timestamp Timestamp quand le greenlight a été donné en dernier
-     */
-    public static saveGreenlightStatus(isGiven: boolean, timestamp: Date | null): void {
-        log("Saving greenlight status", LOG_LEVEL.DATABASE);
-        const greenlightData = {
-            greenlightGiven: isGiven,
-            lastGreenlightTime: timestamp ? timestamp.toISOString() : null
-        };
-
-        IoManager.writeQueue.push(async () => fs.writeFileSync(IoManager.greenlightFilePath, JSON.stringify(greenlightData, null, 2), 'utf-8'));
-        IoManager.processQueue();
-    }
-
-    /**
-     * Récupère le statut du greenlight depuis le fichier
-     * @returns Objet contenant l'état du greenlight et la dernière date d'activation
-     */
-    public static getGreenlightStatus(): { greenlightGiven: boolean, lastGreenlightTime: Date | null } {
-        try {
-            if (!fs.existsSync(IoManager.greenlightFilePath)) {
-                const newGlData = { greenlightGiven: false, lastGreenlightTime: null };
-                fs.mkdirSync(path.dirname(IoManager.greenlightFilePath), { recursive: true });
-                fs.writeFileSync(IoManager.greenlightFilePath, JSON.stringify(newGlData, null, 2), 'utf-8');
-                return newGlData;
-            }
-
-            const data = JSON.parse(fs.readFileSync(IoManager.greenlightFilePath, 'utf-8'));
-            return {
-                greenlightGiven: data.greenlightGiven,
-                lastGreenlightTime: data.lastGreenlightTime ? new Date(data.lastGreenlightTime) : null
-            };
-        } catch (error) {
-            log(`Error reading greenlight status: ${error}`, LOG_LEVEL.ERROR);
-            return { greenlightGiven: false, lastGreenlightTime: null };
-        }
     }
 
     /**
