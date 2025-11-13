@@ -14,11 +14,13 @@ export class Handler {
 
     public constructor(guild: Guild) {
         this.registry = new CommandRegistry();
-
+        const toto = new BotService();
         this.services = [
             new WasteYourTimeService(),
-            new BotService()
+            toto
         ];
+
+        //toto.syncForum("1396572707088236574", "1193896619226181703");
 
         // Register each service with the registry
         this.services.forEach(service => {

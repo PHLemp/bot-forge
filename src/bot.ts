@@ -43,6 +43,7 @@ async function executeAtStart() {
 
     // If you want to sync discord events and roles
     //DiscordUtils.syncDiscordEvents();
+    DiscordUtils.sendPrivateMsg("294569288352923649", "Je suis timide donc je parle pas bcp \n https://tenor.com/view/shy-dog-dog-shy-dog-shoes-martian-shy-gif-10611534617383883284", client);
 }
 
 // Écouter les messages

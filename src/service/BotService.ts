@@ -73,10 +73,10 @@ export class BotService extends AbstractService {
             // Créer un nouveau thread dans le canal cible
             const newThread = await targetThread.threads.create({
                 message: {
-                    content: firstMessage?.content || 'No starter message content',
+                    content: `[Message de **${firstMessage?.author.displayName}**]\n` + '>>> ' + (firstMessage?.content ? this.escapeDiscordPing(firstMessage?.content) : '*No starter message content*'),
                     files: startingMessageAttachments
                 },
-                name: thread.name,
+                name: `[${firstMessage?.author.displayName}] ` + thread.name,
                 autoArchiveDuration: ThreadAutoArchiveDuration.OneDay,
                 reason: `Syncing thread from ${thread.id}`,
             });
@@ -98,7 +98,7 @@ export class BotService extends AbstractService {
                     : [];
 
                 await newThread.send({
-                    content: msg.content ? (lastAuthorName != msg.author.displayName ? `[Message de **${msg.author.displayName}**]\n` : '') + msg.content : '',
+                    content: msg.content ? (lastAuthorName != msg.author.displayName ? `[Message de **${msg.author.displayName}**]\n` : '') + '>>> ' + this.escapeDiscordPing(msg.content) : '',
                     embeds: msg.embeds,
                     components: msg.components,
                     files: attachments
@@ -107,6 +107,10 @@ export class BotService extends AbstractService {
                 lastAuthorName = msg.author.displayName;
             }
         });
+    }
+
+    private escapeDiscordPing(text: string | undefined): string {
+        return text ? text.replace(/@/g, '@\u200b') : ' ';
     }
 
     private sendBotReplyMsgFromContextMenu(interaction: MessageContextMenuCommandInteraction<CacheType>) {
