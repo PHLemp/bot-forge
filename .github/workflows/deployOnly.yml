@@ -2,6 +2,12 @@ name: Only deploy bot
 
 on:
   workflow_dispatch:  # Permet aussi le déclenchement manuel
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: false
+        default: 'main'
+        type: string
 
 jobs:
   deploy:
@@ -11,6 +17,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Display deployment info
+        run: |
+          echo "🚀 Deploying branch: ${{ inputs.branch || github.ref_name }}"
+          echo "Triggered by: ${{ github.actor }}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,7 +38,7 @@ jobs:
           script: |
             cd ~/bot-forge
             echo "📥 Pulling latest code from GitHub..."
-            git pull origin master
+            git pull origin main
             
             echo "📦 Installing dependencies..."
             npm ci
