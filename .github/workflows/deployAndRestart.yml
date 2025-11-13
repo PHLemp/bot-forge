@@ -1,9 +1,6 @@
 name: Deploy Bot to Linux Server
 
 on:
-  push:
-    branches:
-      - master  # Se déclenche à chaque push sur master
   workflow_dispatch:  # Permet aussi le déclenchement manuel
 
 jobs:
