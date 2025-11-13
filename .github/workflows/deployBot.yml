@@ -3,11 +3,11 @@ name: Deploy and restart bot
 on:
   workflow_dispatch:  # Permet aussi le déclenchement manuel
     inputs:
-      branch:
-        description: 'Branch to deploy'
+      restart_bot:
+        description: 'Restart the bot after deployment'
         required: false
-        default: 'main'
-        type: string
+        default: false
+        type: boolean
 
 jobs:
   deploy:
@@ -18,11 +18,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch || github.ref_name }}
+          ref: ${{ github.ref_name }}
 
       - name: Display deployment info
         run: |
-          echo "🚀 Deploying branch: ${{ inputs.branch || github.ref_name }}"
+          echo "🚀 Deploying branch: ${{ github.ref_name }}"
           echo "Triggered by: ${{ github.actor }}"
 
       - name: Setup Node.js
@@ -48,8 +48,13 @@ jobs:
             echo "🔨 Building TypeScript..."
             npx tsc
             
-            echo "🔄 Restarting bot with PM2..."
-            pm2 restart discord-bot || pm2 start dist/bot.js --name discord-bot
+            if [ "${{ inputs.restart_bot }}" = "true" ]; then
+              echo "🔄 Restarting bot with PM2..."
+              pm2 restart discord-bot || pm2 start dist/bot.js --name discord-bot
+              pm2 status
+            else
+              echo "⏸️ Skipping bot restart"
+            fi
             
             echo "✅ Deployment complete!"
             pm2 status

@@ -2,6 +2,12 @@ name: Stop Bot
 
 on:
   workflow_dispatch:  # Permet aussi le déclenchement manuel
+    inputs:
+      start_action:
+        description: 'Y == start, N == stop'
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   stop_it:
@@ -18,9 +24,16 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ~/bot-forge
-            echo "Stopping bot..."
-            pm2 stop discord-bot
-            echo "Bot stopped!"
+            
+            if [ "${{ inputs.start_action }}" = "false" ]; then
+              echo "Stopping bot..."
+              pm2 stop discord-bot
+              echo "Bot stopped!"
+            else
+              echo "Starting bot..."
+              pm2 start dist/bot.js --name discord-bot
+              echo "Bot started!"
+            fi
             pm2 status
 
       - name: Notify deployment status
