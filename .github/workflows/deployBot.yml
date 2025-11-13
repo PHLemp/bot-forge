@@ -1,4 +1,4 @@
-name: Deploy and restart bot
+name: Deploy the bot
 
 on:
   workflow_dispatch:  # Permet aussi le déclenchement manuel

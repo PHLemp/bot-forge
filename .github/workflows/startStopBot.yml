@@ -1,21 +1,21 @@
-name: Stop Bot
+name: Start or stop the bot
 
 on:
   workflow_dispatch:  # Permet aussi le déclenchement manuel
     inputs:
-      start_action:
+      start_stop:
         description: 'Y == start, N == stop'
         required: true
         default: true
         type: boolean
 
 jobs:
-  stop_it:
-    name: Connect and stop the bot
+  start_stop:
+    name: Connect and start or stop the bot
     runs-on: ubuntu-latest
 
     steps:
-      - name: Stop the bot
+      - name: Start or stop the bot
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -25,7 +25,7 @@ jobs:
           script: |
             cd ~/bot-forge
             
-            if [ "${{ inputs.start_action }}" = "false" ]; then
+            if [ "${{ inputs.start_stop }}" = "false" ]; then
               echo "Stopping bot..."
               pm2 stop discord-bot
               echo "Bot stopped!"
@@ -40,7 +40,7 @@ jobs:
         if: always()
         run: |
           if [ ${{ job.status }} == 'success' ]; then
-            echo "✅ Bot stopped successful!"
+            echo "✅ Bot start/stop successful!"
           else
-            echo "❌ Ohoh, can't stop the bot!"
+            echo "❌ Ohoh, can't start/stop the bot!"
           fi
