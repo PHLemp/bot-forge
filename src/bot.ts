@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Handler } from './Handler';
+import { REDFIELD_ID } from './model/constants';
 import { BotClient } from './utils/BotClient';
 import { DiscordUtils } from './utils/DiscordUtils';
 import { log, LOG_LEVEL } from './utils/LogUtils';
@@ -43,7 +44,7 @@ async function executeAtStart() {
 
     // If you want to sync discord events and roles
     //DiscordUtils.syncDiscordEvents();
-    DiscordUtils.sendPrivateMsg("294569288352923649", "Je suis timide donc je parle pas bcp \n https://tenor.com/view/shy-dog-dog-shy-dog-shoes-martian-shy-gif-10611534617383883284", client);
+    DiscordUtils.sendPrivateMsg(REDFIELD_ID, "ALIVE !", client);
 }
 
 // Écouter les messages
