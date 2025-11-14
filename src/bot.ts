@@ -14,12 +14,11 @@ import { TimeUtils } from './utils/TimeUtils';
 
 // Charger les variables d'environnement
 dotenv.config();
-
 // Représente le BOT
-const client = BotClient.getClient();
-
+export const client = BotClient.getClient();
 // Représente le serveur Discord
-let guild: Guild;
+export let guild: Guild;
+// Représente le gestionnaire d'événements et de commandes
 let handler: Handler;
 
 // Lorsque le bot s'est initialisé
@@ -27,24 +26,15 @@ client.once(Events.ClientReady, async () => {
     log('Bot is online!');
 
     client.user?.setStatus('online');
-
     guild = await BotClient.getGuild();
-
-    DiscordUtils.connectToAdminChannel();
-
     handler = new Handler(guild);
 
     executeAtStart();
 });
 
 async function executeAtStart() {
-    // Do something here
-
-    //DiscordUtils.deleteLastMessagesFromFewSeconds("1043215260104003737", guild, 60 * 30);
-
-    // If you want to sync discord events and roles
-    //DiscordUtils.syncDiscordEvents();
-    DiscordUtils.sendPrivateMsg(REDFIELD_ID, "ALIVE !", client);
+    //DiscordUtils.connectToChannel(BOT_VOICE_CHANNEL_ID);
+    DiscordUtils.sendPrivateMsg(REDFIELD_ID, DiscordUtils.getDate(new Date(), "f") + " - ALIVE !", client);
 }
 
 // Écouter les messages

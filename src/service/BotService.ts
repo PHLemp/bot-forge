@@ -1,4 +1,5 @@
 import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, MessageContextMenuCommandInteraction, ModalBuilder, ModalSubmitInteraction, TextInputBuilder, TextInputStyle, ThreadAutoArchiveDuration } from "discord.js";
+import { client } from "../bot";
 import { CommandRegistry } from "../CommandRegistry";
 import { BotClient } from '../utils/BotClient';
 import { log, LOG_LEVEL } from "../utils/LogUtils";
@@ -38,8 +39,8 @@ export class BotService extends AbstractService {
 
         // Fetch every existing posts from the source Thread Channel and create them in the target Thread Channel.
         // Copy every message from the source forum in every "to" post forums.
-        const sourceThread = BotClient.getClient().channels.cache.get(sourceForumChannelId);
-        const targetThread = BotClient.getClient().channels.cache.get(targetForumChannel);
+        const sourceThread = client.channels.cache.get(sourceForumChannelId);
+        const targetThread = client.channels.cache.get(targetForumChannel);
 
         const allThreads = [];
 

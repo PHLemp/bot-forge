@@ -18,7 +18,7 @@ export class BotClient {
                     GatewayIntentBits.GuildIntegrations,
                     GatewayIntentBits.GuildWebhooks,
                     GatewayIntentBits.GuildScheduledEvents,
-                    GatewayIntentBits.GuildEmojisAndStickers,
+                    GatewayIntentBits.GuildExpressions,
                     GatewayIntentBits.GuildVoiceStates
                 ],
                 partials: [Partials.Channel, Partials.User]

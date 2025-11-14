@@ -1,6 +1,7 @@
 import { joinVoiceChannel } from '@discordjs/voice';
 import { APIInteractionGuildMember, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, Collection, EmbedBuilder, Guild, GuildMember, Message, MessageEditOptions, MessagePayload, ModalSubmitInteraction, PermissionsBitField, TextChannel, User, channelMention, roleMention, userMention } from 'discord.js';
-import { ADMIN_BOT_CHANNEL_ID, ADMIN_ROLE_ID, BOT_ADMIN_ROLE_ID, BOT_VOICE_CHANNEL_ID, MODERATOR_CHANNEL_ID, MODERATOR_ROLE_ID, TUTO_COMMANDS_CHANNEL_ID } from '../model/constants';
+import { guild } from '../bot';
+import { ADMIN_BOT_CHANNEL_ID, ADMIN_ROLE_ID, BOT_ADMIN_ROLE_ID, MODERATOR_CHANNEL_ID, MODERATOR_ROLE_ID, TUTO_COMMANDS_CHANNEL_ID } from '../model/constants';
 import { DeleteRoleReasonEnum } from '../model/deleteRoleReasonEnum';
 import { BotClient } from './BotClient';
 import { LOG_LEVEL, log } from "./LogUtils";
@@ -82,7 +83,6 @@ export class DiscordUtils {
     }
 
     public static async deleteRole(roleId: string, reason: string | DeleteRoleReasonEnum) {
-        const guild = await BotClient.getGuild();
         const role = guild.roles.cache.get(roleId);
         if (!role) {
             log(`Role ${roleId} not found`, LOG_LEVEL.ERROR);
@@ -93,7 +93,6 @@ export class DiscordUtils {
     }
 
     public static async deleteRoleFromName(roleName: string, reason: string | DeleteRoleReasonEnum) {
-        const guild = await BotClient.getGuild();
         const role = guild.roles.cache.find(role => role.name === roleName);
         if (!role) {
             log(`Role ${roleName} not found`, LOG_LEVEL.WARN);
@@ -140,7 +139,6 @@ export class DiscordUtils {
      */
     public static async syncDiscordEvents(): Promise<void> {
         log("Syncing all scheduled events with discord roles...");
-        const guild = await BotClient.getGuild();
         const events = await guild.scheduledEvents.fetch();
         for (const event of events.values()) {
             const roleName = DiscordUtils.getFormattedRoleName(event?.name || "no-name-event");
@@ -188,7 +186,7 @@ export class DiscordUtils {
     }
 
     public static async getRoleByName(roleName: string) {
-        return (await BotClient.getGuild()).roles.cache.find(role => role.name === roleName);
+        return guild.roles.cache.find(role => role.name === roleName);
     }
 
     public static async addRoleToUser(member: GuildMember, roleIdentifyer: string) {
@@ -196,7 +194,6 @@ export class DiscordUtils {
     }
 
     public static async addRoleToUsers(members: GuildMember[] | Collection<string, GuildMember>, roleIdentifier: string) {
-        const guild = await BotClient.getGuild();
         let role = guild.roles.cache.find(role => role.name === roleIdentifier || role.id === roleIdentifier);
 
         if (!role) {
@@ -229,12 +226,10 @@ export class DiscordUtils {
     }
 
     public static async getMax1000kUsers(userIds: string[]): Promise<Collection<string, GuildMember>> {
-        const guild = await BotClient.getGuild();
         return await guild.members.fetch({ user: userIds, limit: 1000 });
     }
 
     public static async removeRoleToUsers(deleteMemberList: GuildMember[], roleIdentifier: string) {
-        const guild = await BotClient.getGuild();
         const role = guild.roles.cache.find(role => role.name === roleIdentifier || role.id === roleIdentifier);
 
         if (!role) {
@@ -267,7 +262,6 @@ export class DiscordUtils {
     }
 
     public static async renameRole(oldRoleName: string, newRoleName: string) {
-        const guild = await BotClient.getGuild();
         const role = guild.roles.cache.find(role => role.name === oldRoleName);
 
         if (!role) {
@@ -491,7 +485,6 @@ export class DiscordUtils {
     }
 
     public static async deleteAllMsgsFromChannel(channelId: string) {
-        const guild = await BotClient.getGuild();
         const channel = await guild.channels.fetch(channelId, { force: true })
             .catch(() => log(`Channel ${channelId} not found !!`, LOG_LEVEL.ERROR)) as TextChannel;
         if (!channel) return;
@@ -610,11 +603,10 @@ export class DiscordUtils {
         return channel;
     }
 
-    public static async connectToAdminChannel() {
-        const guild = await BotClient.getGuild();
-        log(`Connecting to BOT voice channel (${BOT_VOICE_CHANNEL_ID})...`);
+    public static async connectToChannel(channelId: string) {
+        log(`Connecting to BOT voice channel (${channelId})...`);
         joinVoiceChannel({
-            channelId: BOT_VOICE_CHANNEL_ID,
+            channelId: channelId,
             guildId: guild.id,
             adapterCreator: guild.voiceAdapterCreator,
             selfMute: true,
@@ -640,7 +632,6 @@ export class DiscordUtils {
     }
 
     public static async getEvent(eventId: string) {
-        const guild = await BotClient.getGuild();
         const events = await guild.scheduledEvents.fetch();
         return events.get(eventId);
     }
