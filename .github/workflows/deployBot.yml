@@ -39,6 +39,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
+            set -eu
+
             cd ~/bot-forge
             echo "📥 Pulling latest code from GitHub..."
             git pull origin main
