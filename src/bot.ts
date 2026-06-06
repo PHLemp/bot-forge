@@ -33,7 +33,7 @@ client.once(Events.ClientReady, async () => {
 });
 
 async function executeAtStart() {
-    //DiscordUtils.connectToChannel(BOT_VOICE_CHANNEL_ID);
+    DiscordUtils.connectToChannel(BOT_VOICE_CHANNEL_ID);
     DiscordUtils.sendPrivateMsg(REDFIELD_ID, DiscordUtils.getDate(new Date(), "f") + " - ALIVE !", client);
 }
 

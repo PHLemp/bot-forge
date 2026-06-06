@@ -31,12 +31,13 @@ jobs:
           node-version: '22'
 
       - name: Deploy to Linux Server
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd ~/bot-forge
             echo "📥 Pulling latest code from GitHub..."
