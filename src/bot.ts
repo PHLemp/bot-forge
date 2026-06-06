@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Handler } from './Handler';
-import { REDFIELD_ID } from './model/constants';
+import { BOT_VOICE_CHANNEL_ID, REDFIELD_ID } from './model/constants';
 import { BotClient } from './utils/BotClient';
 import { DiscordUtils } from './utils/DiscordUtils';
 import { log, LOG_LEVEL } from './utils/LogUtils';
