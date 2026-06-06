@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Handler } from './Handler';
-import { BOT_VOICE_CHANNEL_ID } from './model/constants';
+import { REDFIELD_ID } from './model/constants';
 import { BotClient } from './utils/BotClient';
 import { DiscordUtils } from './utils/DiscordUtils';
 import { log, LOG_LEVEL } from './utils/LogUtils';
@@ -33,8 +33,8 @@ client.once(Events.ClientReady, async () => {
 });
 
 async function executeAtStart() {
-    DiscordUtils.connectToChannel(BOT_VOICE_CHANNEL_ID);
-    DiscordUtils.sendPrivateMsg("156169911213883393", "Rien que pour toi je peux te dire que je suis là ♥", client);
+    //DiscordUtils.connectToChannel(BOT_VOICE_CHANNEL_ID);
+    DiscordUtils.sendPrivateMsg(REDFIELD_ID, DiscordUtils.getDate(new Date(), "f") + " - ALIVE !", client);
 }
 
 // Écouter les messages
